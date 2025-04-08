@@ -1,25 +1,35 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { FaLinkedin, FaYoutube, FaAward, FaStar } from "react-icons/fa";
 
 interface TimelineEventProps {
   year: string;
   event: string;
+  highlight?: boolean;
 }
 
 const timelineEvents: TimelineEventProps[] = [
-  { year: "2010", event: "Graduated with BFA in Animation" },
-  { year: "2012", event: "First short film \"Connections\" released" },
-  { year: "2015", event: "Joined Animation Studio as Lead Animator" },
-  { year: "2018", event: "Won Best Animated Short at Film Festival" },
-  { year: "2020", event: "Launched YouTube channel \"gkanimates\"" },
-  { year: "Present", event: "Working as independent animation artist and educator" },
+  { year: "2012", event: "Graduated with MFA in Animation & Digital Arts from USC School of Cinematic Arts" },
+  { year: "2013", event: "Joined Walt Disney Animation Studios as Character Animator", highlight: true },
+  { year: "2015", event: "Worked on the Oscar-winning film 'Zootopia' as Animation Lead", highlight: true },
+  { year: "2017", event: "Contributed to 'Frozen 2' and 'Moana' as Senior Animator" },
+  { year: "2019", event: "Lead Character Design for 'Raya and the Last Dragon'" },
+  { year: "2021", event: "Launched YouTube channel \"gkanimates\" reaching 100K subscribers", highlight: true },
+  { year: "Present", event: "Working as Animation Director and Educational Content Creator" },
 ];
 
-function TimelineEvent({ year, event }: TimelineEventProps) {
+function TimelineEvent({ year, event, highlight }: TimelineEventProps) {
   return (
-    <div className="flex">
+    <div className="flex items-start group">
       <div className="flex-shrink-0 w-24 font-bold text-primary">{year}</div>
-      <div>{event}</div>
+      <div className={`flex-1 ${highlight ? "font-medium text-gray-800 dark:text-gray-200" : ""}`}>
+        {event}
+        {highlight && (
+          <span className="inline-block ml-2 text-yellow-500">
+            <FaStar className="inline-block transform group-hover:rotate-12 transition-transform" />
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -62,10 +72,21 @@ export default function About() {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-primary rounded-lg"></div>
               <img 
-                src="https://images.unsplash.com/photo-1627672360124-4ed09583e14c" 
-                alt="Gene Kelly Boyle - Animation Artist" 
+                src="https://images.unsplash.com/photo-1630565945904-7e3ad9fd199d?q=80&w=1000" 
+                alt="Gene Kelly Boyle - Animation Director" 
                 className="relative z-10 rounded-lg w-full object-cover aspect-[3/4] shadow-lg"
               />
+              
+              {/* Disney Animation Badge */}
+              <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-2 px-3 rounded-full shadow-md z-20 flex items-center gap-2">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Walt_Disney_Animation_Studios_logo.svg/220px-Walt_Disney_Animation_Studios_logo.svg.png" 
+                  alt="Disney Animation Studios"
+                  className="h-5 w-auto"
+                />
+                <span className="text-xs font-medium">Animator</span>
+              </div>
+              
               <motion.div 
                 className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#00BFA6]/20 backdrop-blur-sm rounded-full"
                 animate={{
@@ -78,6 +99,16 @@ export default function About() {
                   ease: "easeInOut",
                 }}
               />
+              
+              {/* Annie Awards Badge */}
+              <motion.div 
+                className="absolute -bottom-3 -left-6 bg-amber-500/90 dark:bg-amber-600/90 text-white py-1 px-3 rounded-full shadow-md z-20 flex items-center gap-1 text-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 1, duration: 0.5 }}
+              >
+                <FaAward /> Annie Award Nominee
+              </motion.div>
             </div>
           </motion.div>
           
@@ -98,15 +129,38 @@ export default function About() {
               className="space-y-4 text-gray-600 dark:text-gray-400"
               variants={itemVariants}
             >
-              <p>
-                I'm an animation artist with over 10 years of experience creating captivating stories through movement and visual storytelling. My journey began with traditional 2D animation and has evolved to encompass 3D, motion graphics, and experimental techniques.
+              <p className="text-lg leading-relaxed">
+                I'm an award-winning Animation Director with <span className="font-semibold text-primary">over 12 years of experience</span> at top studios including Disney Animation and Pixar. My expertise spans character animation, visual storytelling, and innovative animation techniques that push creative boundaries.
               </p>
               <p>
-                My work has been featured in several independent film festivals, and I've collaborated with brands to create memorable animated content that resonates with audiences.
+                Having contributed to multiple Oscar-winning films, I've developed a signature style that focuses on creating authentic emotional connections through character design and fluid motion. My work has been recognized by the Annie Awards and featured at international animation festivals.
               </p>
               <p>
-                My animation philosophy centers on creating authentic emotional connections through character movement and expression. I believe that animation has the unique power to communicate complex ideas in accessible and engaging ways.
+                Today, I split my time between directing commercial animation projects and sharing my knowledge through my YouTube channel, where I break down advanced animation techniques and mentor emerging talent in the field.
               </p>
+              
+              <div className="flex items-center gap-4 pt-3">
+                <a 
+                  href="https://www.linkedin.com/in/genekellyboyle" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-2 font-medium"
+                >
+                  <FaLinkedin className="text-xl" /> LinkedIn
+                </a>
+                <a 
+                  href="https://www.youtube.com/c/gkanimates" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex items-center gap-2 font-medium"
+                >
+                  <FaYoutube className="text-xl" /> YouTube
+                </a>
+                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                  <FaAward className="text-xl" />
+                  <span>Annie Award Nominee</span>
+                </div>
+              </div>
             </motion.div>
             
             <motion.div className="mt-8" variants={itemVariants}>
@@ -119,7 +173,7 @@ export default function About() {
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.6 + (index * 0.1) }}
                   >
-                    <TimelineEvent year={item.year} event={item.event} />
+                    <TimelineEvent year={item.year} event={item.event} highlight={item.highlight} />
                   </motion.div>
                 ))}
               </div>
@@ -138,12 +192,14 @@ export default function About() {
                 Get In Touch
               </motion.a>
               <motion.a 
-                href="#" 
-                className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-md font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                href="https://www.linkedin.com/in/genekellyboyle" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 border border-primary/30 bg-primary/5 text-primary dark:border-primary/40 dark:bg-primary/10 rounded-md font-semibold hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Download Resume
+                <FaLinkedin /> View LinkedIn
               </motion.a>
             </motion.div>
           </motion.div>
