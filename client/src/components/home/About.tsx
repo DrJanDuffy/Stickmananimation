@@ -73,7 +73,7 @@ export default function About() {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-primary rounded-lg"></div>
               <img 
-                src="/attached_assets/channels4_profile (2).jpg" 
+                src="/src/channels4_profile (2).jpg" 
                 alt="GK Animates Logo" 
                 className="relative z-10 rounded-lg w-full object-contain bg-white aspect-[3/4] shadow-lg p-4"
               />

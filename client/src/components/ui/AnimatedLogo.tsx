@@ -18,7 +18,7 @@ export default function AnimatedLogo({ small = false }: AnimatedLogoProps) {
       }}
     >
       <img 
-        src="/attached_assets/channels4_profile (2).jpg"
+        src="/src/channels4_profile (2).jpg"
         alt="GK Animates Logo"
         className="w-full h-full object-cover"
       />
