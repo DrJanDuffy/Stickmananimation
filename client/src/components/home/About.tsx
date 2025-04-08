@@ -79,14 +79,16 @@ export default function About() {
               />
               
               {/* YouTube Creator Badge */}
-              <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-2 px-3 rounded-full shadow-md z-20 flex items-center gap-2">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/159px-YouTube_full-color_icon_%282017%29.svg.png" 
-                  alt="YouTube Creator"
-                  className="h-5 w-auto"
-                />
-                <span className="text-xs font-medium">Creator</span>
-              </div>
+              <motion.div 
+                className="absolute top-4 right-4 bg-white dark:bg-gray-800 backdrop-blur-sm py-2 px-3 rounded-full shadow-md z-20 flex items-center gap-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4 }}
+                whileHover={{ y: -2 }}
+              >
+                <FaYoutube className="text-red-600 text-lg" />
+                <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">Creator</span>
+              </motion.div>
               
               <motion.div 
                 className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#00BFA6]/20 backdrop-blur-sm rounded-full"
@@ -103,12 +105,13 @@ export default function About() {
               
               {/* Subscriber Milestone Badge */}
               <motion.div 
-                className="absolute -bottom-3 -left-6 bg-red-500/90 dark:bg-red-600/90 text-white py-1 px-3 rounded-full shadow-md z-20 flex items-center gap-1 text-sm"
+                className="absolute -bottom-4 left-4 bg-red-500 dark:bg-red-600 text-white py-2 px-4 rounded-full shadow-lg z-20 flex items-center gap-2 text-sm font-medium"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 1, duration: 0.5 }}
+                whileHover={{ y: -3 }}
               >
-                <FaYoutube /> 100K Subscribers
+                <FaYoutube size={16} className="animate-pulse" /> 100K Subscribers
               </motion.div>
             </div>
           </motion.div>
