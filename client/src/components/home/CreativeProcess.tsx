@@ -117,7 +117,7 @@ export default function CreativeProcess() {
             Behind the <span className="text-primary">Scenes</span>
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-            A glimpse into my creative process from concept to final animation
+            I'm passionate about pushing the boundaries of digital animation and storytelling
           </p>
         </motion.div>
         
@@ -174,9 +174,9 @@ export default function CreativeProcess() {
         >
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="md:w-1/2">
-              <h3 className="font-['Poppins'] font-semibold text-2xl mb-4">Interactive Character</h3>
+              <h3 className="font-['Poppins'] font-semibold text-2xl mb-4">Animation Skills</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Control this simple animation using the sliders below. Adjust speed, expression, and movement style to see different animation effects.
+                As an animator, I'm constantly refining my techniques and exploring new ways to engage audiences through visual storytelling. Try this interactive demo of my animation principles:
               </p>
               <div className="space-y-4">
                 <div>
@@ -239,7 +239,36 @@ export default function CreativeProcess() {
             </div>
             
             <div className="md:w-1/2">
-              <h3 className="font-['Poppins'] font-semibold text-2xl mb-4">Featured Animation</h3>
+              <h3 className="font-['Poppins'] font-semibold text-2xl mb-4">Professional Animation</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-100 dark:border-gray-700 mb-4">
+                <h4 className="font-medium text-lg mb-2">My Animation Skills:</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>2D Animation</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>Character Design</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>Storyboarding</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>Digital Storytelling</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>Video Editing</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    <span>YouTube Management</span>
+                  </div>
+                </div>
+              </div>
               {isLoading ? (
                 <div className="h-40 flex items-center justify-center">
                   <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
