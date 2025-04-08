@@ -270,14 +270,25 @@ export default function CreativeProcess() {
                   </div>
                   <div className="p-4">
                     <h4 className="font-medium text-gray-800 dark:text-gray-200 line-clamp-1">{video.title}</h4>
+                    
+                    {video.description && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 h-8 overflow-hidden">
+                        {video.description.split(/\r?\n/)[0]}
+                      </p>
+                    )}
+                    
                     <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{video.duration}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{video.category}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{video.duration}</span>
+                      </div>
                       <div className="flex gap-2">
                         <a 
                           href={`https://www.youtube.com/watch?v=${video.videoId}`}
                           target="_blank"
                           rel="noopener noreferrer" 
                           className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-500"
+                          title="Watch"
                         >
                           <FaPlay size={14} />
                         </a>
@@ -286,6 +297,7 @@ export default function CreativeProcess() {
                           target="_blank"
                           rel="noopener noreferrer" 
                           className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-500"
+                          title="Like and Subscribe"
                         >
                           <FaThumbsUp size={14} />
                         </a>
@@ -294,6 +306,7 @@ export default function CreativeProcess() {
                           target="_blank"
                           rel="noopener noreferrer" 
                           className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-500"
+                          title="Share"
                         >
                           <FaShare size={14} />
                         </a>
@@ -364,64 +377,132 @@ export default function CreativeProcess() {
           </div>
         </motion.div>
         
-        {/* Featured Video */}
+        {/* Featured Episode */}
         {!longestLoading && longestVideo && (
           <motion.div 
-            className="mt-16 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
+            className="mt-16"
             initial={{ opacity: 0, y: 40 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.7 }}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-5">
-              <div className="lg:col-span-3 aspect-video">
-                <iframe
-                  src={`https://www.youtube.com/embed/${longestVideo.videoId}?rel=0`}
-                  title={longestVideo.title}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-              <div className="p-8 lg:col-span-2">
-                <h3 className="text-2xl font-['Poppins'] font-bold mb-2">{longestVideo.title}</h3>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                    {longestVideo.category}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">
-                    {longestVideo.duration}
-                  </span>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-['Poppins'] font-bold flex items-center gap-2">
+                <FaFilm className="text-primary" />
+                Featured Episode
+              </h3>
+              <a 
+                href="https://www.youtube.com/@genekellyboyle/videos" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium flex items-center gap-1"
+              >
+                Watch Series <span className="text-xl">→</span>
+              </a>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                <div className="aspect-video bg-gray-100 dark:bg-gray-900 relative group">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${longestVideo.videoId}?rel=0`}
+                    title={longestVideo.title}
+                    className="absolute inset-0 w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
-                {longestVideo.description && (
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    {longestVideo.description}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-3">
+                <div className="p-6 md:p-8 flex flex-col">
+                  {/* Episode badge */}
+                  <div className="mb-3">
+                    <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                      {longestVideo.title.includes("Ep") ? 
+                        longestVideo.title.match(/Ep\.?\s*\d+/i)?.[0] || "Latest Episode" : 
+                        "Featured Video"
+                      }
+                    </span>
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-xl md:text-2xl font-['Poppins'] font-bold mb-2">
+                    {longestVideo.title}
+                  </h3>
+                  
+                  {/* Meta info */}
+                  <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <span className="flex items-center gap-1">
+                      <FaVideo size={14} className="text-primary" /> {longestVideo.category}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-gray-400"></span> {longestVideo.duration}
+                    </span>
+                  </div>
+                  
+                  {/* Description */}
+                  {longestVideo.description && (
+                    <div className="mb-6 flex-grow">
+                      <div className="text-gray-600 dark:text-gray-400 text-sm space-y-3 md:pr-4">
+                        {longestVideo.description.split(/\r?\n/).slice(0, 2).map((line, idx) => (
+                          <p key={idx} className={idx === 0 ? "font-medium text-gray-800 dark:text-gray-200" : ""}>
+                            {line}
+                          </p>
+                        ))}
+                        {longestVideo.description.split(/\r?\n/).length > 2 && (
+                          <button 
+                            className="text-primary hover:underline text-xs font-medium mt-1 flex items-center"
+                            onClick={() => window.open(`https://www.youtube.com/watch?v=${longestVideo.videoId}`, '_blank')}
+                          >
+                            Read full description on YouTube <span className="ml-1">→</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Action buttons */}
+                  <div className="flex flex-wrap gap-3 mt-auto">
+                    <a 
+                      href={`https://www.youtube.com/watch?v=${longestVideo.videoId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      <FaPlay /> Watch Now
+                    </a>
+                    <a 
+                      href={`https://www.youtube.com/watch?v=${longestVideo.videoId}&sub_confirmation=1`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      <FaThumbsUp /> Like
+                    </a>
+                    <a 
+                      href={`https://twitter.com/intent/tweet?text=Check out this amazing animation by @gkanimates&url=https://www.youtube.com/watch?v=${longestVideo.videoId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      <FaShare /> Share
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Episode navigation */}
+              <div className="bg-gray-50 dark:bg-gray-750 p-4 flex justify-between items-center border-t border-gray-100 dark:border-gray-700">
+                <div className="text-sm">
+                  <span className="text-primary font-medium">Stickman Epic Legends</span>
+                  <span className="text-gray-500 dark:text-gray-400 ml-2">Action Animation Series</span>
+                </div>
+                <div className="flex gap-2">
                   <a 
-                    href={`https://www.youtube.com/watch?v=${longestVideo.videoId}`}
+                    href="https://www.youtube.com/playlist?list=PL66XQNBh4vSUNPRkJnB6RJHLL6nOOH9NB" 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                    className="text-sm text-primary hover:underline font-medium"
                   >
-                    <FaPlay /> Watch Now
-                  </a>
-                  <a 
-                    href={`https://www.youtube.com/watch?v=${longestVideo.videoId}&sub_confirmation=1`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium"
-                  >
-                    <FaThumbsUp /> Like
-                  </a>
-                  <a 
-                    href={`https://twitter.com/intent/tweet?text=Check out this amazing animation by @gkanimates&url=https://www.youtube.com/watch?v=${longestVideo.videoId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-medium"
-                  >
-                    <FaShare /> Share
+                    View All Episodes
                   </a>
                 </div>
               </div>
