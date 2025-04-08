@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { syncYouTubeVideos } from "./youtube-service";
 
 const app = express();
 app.use(express.json());
@@ -77,6 +78,11 @@ app.use((req, res, next) => {
     })
     .on('listening', () => {
       log(`Server successfully started on port ${port}`);
+      
+      // Sync YouTube videos with our database
+      syncYouTubeVideos().catch(err => {
+        console.error("Failed to sync YouTube videos:", err);
+      });
     })
     .on('error', (err: any) => {
       if (err.code === 'EADDRINUSE') {
