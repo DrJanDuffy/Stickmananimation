@@ -46,7 +46,7 @@ A professional animation portfolio website for GK Animates, showcasing the "Stic
 - Setup Guide (SETUP.md) - Detailed setup instructions
 - Architecture (docs/ARCHITECTURE.md) - System architecture and design decisions
 - Contributing Guidelines (CONTRIBUTING.md) - How to contribute to the project
-- Deployment Guide (docs/deploy-guide.txt) - Guide for deploying to Vercel
+- Deployment Guide (docs/DEPLOYMENT.md) - Guide for deploying to Vercel
 
 ## Deployment
 
@@ -61,7 +61,7 @@ The project is configured for easy deployment on Vercel:
 3. Deploy your application
 4. Initialize the database schema using the Drizzle CLI
 
-For detailed instructions, see the [Deployment Guide](docs/deploy-guide.txt).
+For detailed instructions, see the [Deployment Guide](docs/DEPLOYMENT.md).
 
 ## Links
 

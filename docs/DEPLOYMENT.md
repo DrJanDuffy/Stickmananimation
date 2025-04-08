@@ -1,124 +1,71 @@
-# Deploying to Vercel
+# Deployment Guide
 
-This guide walks you through deploying the GK Animates website to Vercel.
+This document explains how the application is configured for deployment on Vercel and the solutions to common deployment issues.
 
-## Prerequisites
+## Deployment Configuration
 
-Before deploying, make sure you have:
+The application is configured to be deployed on Vercel using the following files:
 
-1. A Vercel account
-2. A PostgreSQL database (Vercel Postgres, Neon, Railway, etc.)
-3. A YouTube API key with access to the YouTube Data API v3
+- `vercel.json`: Configures build settings, routes, and serverless function options
+- `api/index.js`: A standalone serverless API handler that works without ESM imports
+- `index.js`: Entry point that forwards to the API handler
 
-## Deployment Steps
+## Vercel Environment Variables
 
-### 1. Fork or Clone the Repository
+The following environment variables must be set in the Vercel dashboard:
 
-If you have not already, fork or clone this repository to your GitHub account.
+- `DATABASE_URL`: The PostgreSQL connection string for the Neon database
+- `YOUTUBE_API_KEY`: Your YouTube Data API key
 
-### 2. Connect to Vercel
+## Solving CommonJS vs ESM Issues
 
-1. Go to Vercel Dashboard
-2. Click "Add New" → "Project"
-3. Import your GitHub repository
-4. Select the branch you want to deploy (usually main)
+The main challenge with deploying to Vercel was the incompatibility between ESM and CommonJS modules in a serverless environment. The solution was to:
 
-### 3. Configure Environment Variables
+1. Create a dedicated CommonJS API handler in `api/index.js` that:
+   - Directly connects to the database (no imports from server/)
+   - Implements all API endpoints using raw SQL instead of Drizzle ORM
+   - Includes appropriate error handling for serverless execution
 
-Add the following environment variables in the Vercel project settings:
+2. Simplify the deployment configuration in `vercel.json` to:
+   - Use reasonable memory limits (1024MB)
+   - Set appropriate timeout (10 seconds)
+   - Route all traffic through the API handler
 
-- DATABASE_URL: Your PostgreSQL connection string
-  - Format: postgresql://username:password@host:port/database
-- YOUTUBE_API_KEY: Your YouTube Data API key
-  - This is required to fetch videos from the GK Animates channel
+## Performance Optimizations
 
-### 4. Deploy
+To improve performance in a serverless environment:
 
-1. Click "Deploy" to start the deployment process
-2. Vercel will automatically build and deploy your project
-3. Once deployment is complete, Vercel will provide you with a URL to access your site
+1. Database operations use batch processing to avoid timeouts
+2. API routes check if the database already has videos to avoid expensive YouTube API calls
+3. Improved error handling with detailed logs helps diagnose issues
+4. SQL queries are optimized for the Neon serverless PostgreSQL environment
 
-### 5. Initialize Database (First Deployment Only)
+## Manual Deployment
 
-After the first deployment, you need to initialize your database schema. You can do this in two ways:
+To manually deploy to Vercel:
 
-#### Option 1: Using Vercel CLI
-
-Install Vercel CLI:
-```
-npm i -g vercel
-```
-
-Login to Vercel:
-```
-vercel login
-```
-
-Link to your project:
-```
-vercel link
-```
-
-Run database migration:
-```
-vercel env pull .env.production.local
-npx drizzle-kit push:pg --config=drizzle.config.ts
-```
-
-#### Option 2: Running Migrations Locally
-
-Set the DATABASE_URL to your production database:
-```
-export DATABASE_URL=your_production_database_url
-```
-
-Run migration:
-```
-npx drizzle-kit push:pg --config=drizzle.config.ts
-```
+1. Make sure all changes are committed to your repository
+2. Link your repository to a Vercel project
+3. Set the required environment variables
+4. Deploy the project
 
 ## Troubleshooting
 
-### Database Connection Issues
+Common issues and solutions:
 
-If you encounter database connection issues:
+1. **"Cannot find module" errors**: This indicates an ESM vs CommonJS compatibility issue. Make sure the API handler uses `require()` instead of `import`.
 
-1. Verify your DATABASE_URL is correct
-2. Ensure your database allows connections from Vercel IP ranges
-3. Check that your database user has appropriate permissions
+2. **Timeout errors**: If functions timeout, check:
+   - Increase the `maxDuration` in vercel.json
+   - Use batched processing for database operations
+   - Check for infinite loops or expensive operations
 
-### YouTube API Issues
+3. **Database connection issues**: Verify:
+   - The `DATABASE_URL` environment variable is set correctly
+   - The database is accessible from Vercel's network
+   - Connection pooling is properly configured
 
-If videos are not loading:
-
-1. Verify your YOUTUBE_API_KEY is correct
-2. Ensure the YouTube Data API v3 is enabled in your Google Cloud Console
-3. Check API quotas and limits in Google Cloud Console
-
-## Maintaining Your Deployment
-
-### Updating Your Site
-
-Any changes pushed to your main branch will trigger automatic redeployment.
-
-### Checking Logs
-
-1. Go to your project on the Vercel dashboard
-2. Click "View Functions Logs" to see server logs
-3. Use these logs to diagnose any issues with your deployment
-
-## Custom Domains
-
-To add a custom domain:
-
-1. Go to your project on the Vercel dashboard
-2. Click "Domains"
-3. Add your custom domain and follow the verification steps
-
-## Next Steps
-
-After successful deployment, consider:
-
-1. Setting up a CI/CD pipeline for testing before deployment
-2. Adding monitoring tools like Sentry for error tracking
-3. Implementing analytics to track visitor engagement
+4. **Missing YouTube data**: Ensure:
+   - The `YOUTUBE_API_KEY` environment variable is set
+   - API key has correct permissions
+   - API quota is not exhausted
