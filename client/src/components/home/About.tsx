@@ -73,8 +73,8 @@ export default function About() {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-primary rounded-lg"></div>
               <img 
-                src="https://images.unsplash.com/photo-1630565945904-7e3ad9fd199d?q=80&w=1000" 
-                alt="Gene Kelly Boyle - Animation Director" 
+                src="https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" 
+                alt="Gene Kelly Boyle - Animation Creator" 
                 className="relative z-10 rounded-lg w-full object-cover aspect-[3/4] shadow-lg"
               />
               
