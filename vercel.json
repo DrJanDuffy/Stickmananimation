@@ -2,27 +2,27 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "vercel-entry.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["dist/**", "server/**"],
-        "nodeVersion": "18.x"
-      }
+  "functions": {
+    "api/index.js": {
+      "includeFiles": [
+        "dist/**",
+        "vercel-entry.js"
+      ],
+      "memory": 1024,
+      "maxDuration": 10
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "vercel-entry.js"
+      "dest": "/api/index.js"
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "vercel-entry.js"
+      "dest": "/api/index.js"
     }
   ],
   "env": {

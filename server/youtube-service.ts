@@ -201,6 +201,21 @@ export async function fetchAllChannelVideos() {
 // Fetch and save videos to our database
 export async function syncYouTubeVideos(): Promise<void> {
   try {
+    // Check if API key exists
+    if (!YOUTUBE_API_KEY) {
+      console.error("YOUTUBE_API_KEY environment variable is not set");
+      return;
+    }
+    
+    // Check first if we already have videos in the database
+    // This is important for serverless environments to avoid unnecessary API calls
+    const existingVideosCheck = await storage.getAllVideos();
+    if (existingVideosCheck.length > 0) {
+      console.log("Database already contains videos, skipping initialization");
+      return;
+    }
+    
+    // Fetch videos from YouTube API
     const videos = await fetchAllChannelVideos();
     const categories = await fetchVideoCategories();
     
@@ -215,60 +230,84 @@ export async function syncYouTubeVideos(): Promise<void> {
     const existingVideos = await storage.getAllVideos();
     const existingVideoIds = new Set(existingVideos.map(video => video.videoId));
     
-    // Process each video
-    for (const video of videos) {
-      const { id, snippet, contentDetails, statistics } = video as YouTubeVideo;
+    // Process videos in batches to avoid overwhelming the database
+    // This is especially important in serverless environments
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+      const batch = videos.slice(i, i + BATCH_SIZE);
       
-      // For existing videos, update the view count
-      if (existingVideoIds.has(id)) {
-        const existingVideo = existingVideos.find(v => v.videoId === id);
-        if (existingVideo) {
-          await storage.updateVideo(existingVideo.id, { 
-            viewCount: parseInt(statistics.viewCount) || 0 
-          });
+      // Process each video in the batch
+      const promises = batch.map(async (video) => {
+        try {
+          const { id, snippet, contentDetails, statistics } = video as YouTubeVideo;
+          
+          // For existing videos, update the view count
+          if (existingVideoIds.has(id)) {
+            const existingVideo = existingVideos.find(v => v.videoId === id);
+            if (existingVideo) {
+              await storage.updateVideo(existingVideo.id, { 
+                viewCount: parseInt(statistics.viewCount) || 0 
+              });
+            }
+            return;
+          }
+          
+          // Get the best thumbnail available
+          const thumbnailUrl = snippet.thumbnails.maxres?.url || snippet.thumbnails.high.url;
+          
+          // Map the category
+          const category = mapCategoryName(snippet.categoryId, categories);
+          
+          // Format the duration
+          const duration = formatDuration(contentDetails.duration);
+          
+          // Create a video object to store in our database
+          const videoToInsert: InsertVideo = {
+            videoId: id,
+            title: snippet.title,
+            description: snippet.description,
+            thumbnailUrl,
+            category,
+            duration,
+            viewCount: parseInt(statistics.viewCount) || 0,
+            publishedAt: new Date(snippet.publishedAt),
+            featured: false, // Default to not featured
+            showreel: false, // Default to not showreel
+          };
+          
+          // Always mark new videos as featured so they show up in featured section
+          videoToInsert.featured = true;
+          
+          // Set the newest video as the showreel
+          if (video === videos[0]) {
+            videoToInsert.showreel = true;
+          }
+          
+          // Add to database
+          await storage.createVideo(videoToInsert);
+          console.log(`Added video: ${snippet.title}`);
+        } catch (err) {
+          console.error(`Error processing video: ${err instanceof Error ? err.message : String(err)}`);
         }
-        continue;
-      }
+      });
       
-      // Get the best thumbnail available
-      const thumbnailUrl = snippet.thumbnails.maxres?.url || snippet.thumbnails.high.url;
-      
-      // Map the category
-      const category = mapCategoryName(snippet.categoryId, categories);
-      
-      // Format the duration
-      const duration = formatDuration(contentDetails.duration);
-      
-      // Create a video object to store in our database
-      const videoToInsert: InsertVideo = {
-        videoId: id,
-        title: snippet.title,
-        description: snippet.description,
-        thumbnailUrl,
-        category,
-        duration,
-        viewCount: parseInt(statistics.viewCount) || 0,
-        publishedAt: new Date(snippet.publishedAt),
-        featured: false, // Default to not featured
-        showreel: false, // Default to not showreel
-      };
-      
-      // Always mark new videos as featured so they show up in featured section
-      videoToInsert.featured = true;
-      
-      // Set the newest video as the showreel
-      if (video === videos[0]) {
-        videoToInsert.showreel = true;
-      }
-      
-      // Add to database
-      await storage.createVideo(videoToInsert);
-      console.log(`Added video: ${snippet.title}`);
+      // Wait for all videos in this batch to be processed before moving to the next batch
+      await Promise.all(promises);
     }
     
     console.log("YouTube sync completed");
   } catch (error) {
-    console.error("Error syncing YouTube videos:", error);
+    // More detailed error logging for debugging
+    console.error("Error syncing YouTube videos:", 
+      error instanceof Error 
+        ? `${error.name}: ${error.message}\n${error.stack}` 
+        : String(error)
+    );
+    
+    // Rethrow in non-production environments for better debugging
+    if (process.env.NODE_ENV !== 'production') {
+      throw error;
+    }
   }
 }
 
