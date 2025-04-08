@@ -1,4 +1,6 @@
 import { users, subscribers, videos, type User, type InsertUser, type Subscriber, type InsertSubscriber, type Video, type InsertVideo } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 // Interface for the storage methods
 export interface IStorage {
@@ -23,120 +25,128 @@ export interface IStorage {
   updateVideo(id: number, video: Partial<InsertVideo>): Promise<Video | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private usersMap: Map<number, User>;
-  private subscribersMap: Map<number, Subscriber>;
-  private videosMap: Map<number, Video>;
-  
-  private currentUserId: number;
-  private currentSubscriberId: number;
-  private currentVideoId: number;
-
-  constructor() {
-    this.usersMap = new Map();
-    this.subscribersMap = new Map();
-    this.videosMap = new Map();
-    
-    this.currentUserId = 1;
-    this.currentSubscriberId = 1;
-    this.currentVideoId = 1;
-    
-    // Initialize with sample videos
-    this.initializeSampleVideos();
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.usersMap.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.usersMap.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.usersMap.set(id, user);
-    return user;
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
   }
   
   // Newsletter Subscriber methods
   async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
-    return Array.from(this.subscribersMap.values()).find(
-      (subscriber) => subscriber.email === email,
-    );
+    const result = await db.select().from(subscribers).where(eq(subscribers.email, email));
+    return result[0];
   }
   
   async createSubscriber(insertSubscriber: InsertSubscriber): Promise<Subscriber> {
-    const id = this.currentSubscriberId++;
-    const subscriber: Subscriber = { 
-      ...insertSubscriber, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.subscribersMap.set(id, subscriber);
-    return subscriber;
+    const result = await db.insert(subscribers).values({
+      ...insertSubscriber,
+      createdAt: new Date()
+    }).returning();
+    return result[0];
   }
   
   async getAllSubscribers(): Promise<Subscriber[]> {
-    return Array.from(this.subscribersMap.values());
+    return await db.select().from(subscribers).orderBy(desc(subscribers.createdAt));
   }
   
   // YouTube Video methods
   async getShowreel(): Promise<Video | undefined> {
-    return Array.from(this.videosMap.values()).find(
-      (video) => video.showreel === true,
-    );
+    // Try to find a video marked as showreel
+    const showreelResult = await db.select()
+      .from(videos)
+      .where(eq(videos.showreel, true))
+      .limit(1);
+    
+    if (showreelResult.length > 0) {
+      return showreelResult[0];
+    }
+    
+    // If no showreel is set, return the first featured video
+    const featuredResult = await db.select()
+      .from(videos)
+      .where(eq(videos.featured, true))
+      .limit(1);
+    
+    if (featuredResult.length > 0) {
+      return featuredResult[0];
+    }
+    
+    // Fallback to any video
+    const anyResult = await db.select().from(videos).limit(1);
+    return anyResult[0];
   }
   
   async getFeaturedVideos(): Promise<Video[]> {
-    return Array.from(this.videosMap.values())
-      .filter((video) => video.featured === true)
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    return await db.select()
+      .from(videos)
+      .where(eq(videos.featured, true))
+      .orderBy(desc(videos.publishedAt));
   }
   
   async getAllVideos(): Promise<Video[]> {
-    return Array.from(this.videosMap.values())
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    return await db.select()
+      .from(videos)
+      .orderBy(desc(videos.publishedAt));
   }
   
   async getVideosByCategory(category: string): Promise<Video[]> {
-    return Array.from(this.videosMap.values())
-      .filter((video) => video.category === category)
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    if (category === "All") {
+      return this.getAllVideos();
+    }
+    
+    return await db.select()
+      .from(videos)
+      .where(eq(videos.category, category))
+      .orderBy(desc(videos.publishedAt));
   }
   
   async getVideoById(id: number): Promise<Video | undefined> {
-    return this.videosMap.get(id);
+    const result = await db.select().from(videos).where(eq(videos.id, id));
+    return result[0];
   }
   
   async getVideoByYouTubeId(videoId: string): Promise<Video | undefined> {
-    return Array.from(this.videosMap.values()).find(
-      (video) => video.videoId === videoId,
-    );
+    const result = await db.select().from(videos).where(eq(videos.videoId, videoId));
+    return result[0];
   }
   
   async createVideo(insertVideo: InsertVideo): Promise<Video> {
-    const id = this.currentVideoId++;
-    const video: Video = { ...insertVideo, id };
-    this.videosMap.set(id, video);
-    return video;
+    const result = await db.insert(videos).values(insertVideo).returning();
+    return result[0];
   }
   
   async updateVideo(id: number, videoUpdate: Partial<InsertVideo>): Promise<Video | undefined> {
-    const existingVideo = this.videosMap.get(id);
-    if (!existingVideo) return undefined;
+    const result = await db.update(videos)
+      .set(videoUpdate)
+      .where(eq(videos.id, id))
+      .returning();
     
-    const updatedVideo: Video = { ...existingVideo, ...videoUpdate };
-    this.videosMap.set(id, updatedVideo);
-    return updatedVideo;
+    return result[0];
   }
   
-  // Initialize with sample videos for development
-  private initializeSampleVideos(): void {
+  // Helper method to initialize the database with sample videos if needed
+  async initializeSampleVideos(): Promise<void> {
+    // Check if we already have videos
+    const existingVideos = await db.select().from(videos);
+    if (existingVideos.length > 0) {
+      console.log("Database already contains videos, skipping initialization");
+      return;
+    }
+    
+    console.log("Initializing database with sample videos");
+    
+    // Sample videos data
     const sampleVideos: InsertVideo[] = [
       {
         videoId: "dQw4w9WgXcQ", // Sample YouTube video
@@ -261,11 +271,15 @@ export class MemStorage implements IStorage {
       },
     ];
     
-    // Add sample videos to storage
-    sampleVideos.forEach(video => {
-      this.createVideo(video);
-    });
+    // Insert all sample videos
+    await db.insert(videos).values(sampleVideos);
   }
 }
 
-export const storage = new MemStorage();
+// Create and export the storage instance
+export const storage = new DatabaseStorage();
+
+// Initialize sample data if needed
+storage.initializeSampleVideos().catch(err => {
+  console.error("Error initializing sample videos:", err);
+});
