@@ -57,44 +57,23 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Try to serve the app on port 5000 first, then fallback to other ports if needed
-  // this serves both the API and the client
-  const tryPorts = [5000, 5001, 5002, 3000, 8080];
+  // Use the port provided by Vercel or fallback to 5000
+  const port = process.env.PORT || 5000;
   
-  // Function to try binding to a port
-  const tryBindPort = (portIndex = 0) => {
-    if (portIndex >= tryPorts.length) {
-      log('Failed to bind to any of the configured ports');
-      process.exit(1);
-      return;
-    }
+  server.listen({
+    port: Number(port),
+    host: "0.0.0.0",
+  })
+  .on('listening', () => {
+    log(`Server successfully started on port ${port}`);
     
-    const port = tryPorts[portIndex];
-    
-    server.listen({
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    })
-    .on('listening', () => {
-      log(`Server successfully started on port ${port}`);
-      
-      // Sync YouTube videos with our database
-      syncYouTubeVideos().catch(err => {
-        console.error("Failed to sync YouTube videos:", err);
-      });
-    })
-    .on('error', (err: any) => {
-      if (err.code === 'EADDRINUSE') {
-        log(`Port ${port} is already in use, trying next port...`);
-        tryBindPort(portIndex + 1);
-      } else {
-        log(`Error starting server: ${err.message}`);
-        throw err;
-      }
+    // Sync YouTube videos with our database
+    syncYouTubeVideos().catch(err => {
+      console.error("Failed to sync YouTube videos:", err);
     });
-  };
-  
-  // Start trying ports
-  tryBindPort();
+  })
+  .on('error', (err: any) => {
+    log(`Error starting server: ${err.message}`);
+    throw err;
+  });
 })();

@@ -46,6 +46,22 @@ A professional animation portfolio website for GK Animates, showcasing the "Stic
 - Setup Guide (SETUP.md) - Detailed setup instructions
 - Architecture (docs/ARCHITECTURE.md) - System architecture and design decisions
 - Contributing Guidelines (CONTRIBUTING.md) - How to contribute to the project
+- Deployment Guide (docs/deploy-guide.txt) - Guide for deploying to Vercel
+
+## Deployment
+
+### Deploying to Vercel
+
+The project is configured for easy deployment on Vercel:
+
+1. Connect your GitHub repository to Vercel
+2. Set the required environment variables:
+   - `DATABASE_URL` - PostgreSQL connection string
+   - `YOUTUBE_API_KEY` - YouTube Data API key
+3. Deploy your application
+4. Initialize the database schema using the Drizzle CLI
+
+For detailed instructions, see the [Deployment Guide](docs/deploy-guide.txt).
 
 ## Links
 
@@ -55,3 +71,4 @@ A professional animation portfolio website for GK Animates, showcasing the "Stic
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
