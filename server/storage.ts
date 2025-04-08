@@ -79,21 +79,38 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getFeaturedVideos(): Promise<Video[]> {
-    // First, get all videos and sort by view count
+    // First get the longest video
+    const longestVideo = await this.getLongestVideo();
+    
+    // Get all videos and sort by view count
     const allVideos = await db.select()
       .from(videos)
       .orderBy(desc(videos.viewCount));
     
-    // Take the top 12 videos by view count
-    const topVideos = allVideos.slice(0, 12);
+    // Filter out the longest video
+    const filteredVideos = longestVideo 
+      ? allVideos.filter(v => v.id !== longestVideo.id)
+      : allVideos;
     
-    // Update these videos to be featured
-    for (const video of topVideos) {
-      if (!video.featured) {
+    // Take the top 12 videos by view count
+    const topVideos = filteredVideos.slice(0, 12);
+    
+    // Update these videos to be featured and ensure longest video is not featured
+    for (const video of allVideos) {
+      const shouldBeFeature = topVideos.some(tv => tv.id === video.id);
+      
+      if (shouldBeFeature !== video.featured) {
         await db.update(videos)
-          .set({ featured: true })
+          .set({ featured: shouldBeFeature })
           .where(eq(videos.id, video.id));
       }
+    }
+    
+    // If we have a longest video, ensure it's not in featured list
+    if (longestVideo) {
+      await db.update(videos)
+        .set({ featured: false })
+        .where(eq(videos.id, longestVideo.id));
     }
       
     // Return the most viewed featured videos
