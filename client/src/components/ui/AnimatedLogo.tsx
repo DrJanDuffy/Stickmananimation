@@ -7,10 +7,9 @@ interface AnimatedLogoProps {
 export default function AnimatedLogo({ small = false }: AnimatedLogoProps) {
   return (
     <motion.div
-      className={`${small ? "w-8 h-8" : "w-10 h-10"} rounded-full bg-primary flex items-center justify-center text-white font-['Comfortaa'] font-bold`}
+      className={`${small ? "w-10 h-10" : "w-12 h-12"} relative rounded-full overflow-hidden border-2 border-primary shadow-md bg-white`}
       animate={{
-        scale: [1, 1.1, 1],
-        opacity: [0.7, 1, 0.7],
+        scale: [1, 1.05, 1],
       }}
       transition={{
         duration: 3,
@@ -18,7 +17,11 @@ export default function AnimatedLogo({ small = false }: AnimatedLogoProps) {
         ease: "easeInOut",
       }}
     >
-      GK
+      <img 
+        src="/attached_assets/channels4_profile (2).jpg"
+        alt="GK Animates Logo"
+        className="w-full h-full object-cover"
+      />
     </motion.div>
   );
 }
