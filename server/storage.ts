@@ -62,36 +62,27 @@ export class DatabaseStorage implements IStorage {
   
   // YouTube Video methods
   async getShowreel(): Promise<Video | undefined> {
-    // Try to find a video marked as showreel
-    const showreelResult = await db.select()
+    // Always return the latest video as showreel
+    const latestVideo = await db.select()
       .from(videos)
-      .where(eq(videos.showreel, true))
+      .orderBy(desc(videos.publishedAt))
       .limit(1);
     
-    if (showreelResult.length > 0) {
-      return showreelResult[0];
+    if (latestVideo.length > 0) {
+      return latestVideo[0];
     }
     
-    // If no showreel is set, return the first featured video
-    const featuredResult = await db.select()
-      .from(videos)
-      .where(eq(videos.featured, true))
-      .limit(1);
-    
-    if (featuredResult.length > 0) {
-      return featuredResult[0];
-    }
-    
-    // Fallback to any video
+    // Fallback to any video if no videos exist
     const anyResult = await db.select().from(videos).limit(1);
     return anyResult[0];
   }
   
   async getFeaturedVideos(): Promise<Video[]> {
+    // Return the 6 latest videos as featured videos
     return await db.select()
       .from(videos)
-      .where(eq(videos.featured, true))
-      .orderBy(desc(videos.publishedAt));
+      .orderBy(desc(videos.publishedAt))
+      .limit(6);
   }
   
   async getAllVideos(): Promise<Video[]> {

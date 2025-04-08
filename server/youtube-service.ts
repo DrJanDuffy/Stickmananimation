@@ -246,10 +246,12 @@ export async function syncYouTubeVideos(): Promise<void> {
         showreel: false, // Default to not showreel
       };
       
-      // Make the first video the showreel (if we don't have one yet)
-      if (!existingVideos.some(v => v.showreel)) {
+      // Always mark new videos as featured so they show up in featured section
+      videoToInsert.featured = true;
+      
+      // Set the newest video as the showreel
+      if (video === videos[0]) {
         videoToInsert.showreel = true;
-        videoToInsert.featured = true;
       }
       
       // Add to database
