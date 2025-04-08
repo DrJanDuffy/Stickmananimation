@@ -30,3 +30,8 @@ export async function getVideosByCategory(category: string): Promise<YouTubeVide
   const res = await apiRequest("GET", `/api/videos/category/${category}`, undefined);
   return res.json();
 }
+
+export async function getLongestVideo(): Promise<YouTubeVideo> {
+  const res = await apiRequest("GET", "/api/videos/longest", undefined);
+  return res.json();
+}

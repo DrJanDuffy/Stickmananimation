@@ -54,8 +54,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get video by ID
-  app.get("/api/videos/:id", async (req: Request, res: Response) => {
+  // Get longest video for interactive examples
+  app.get("/api/videos/longest", async (_req: Request, res: Response) => {
+    try {
+      const longestVideo = await storage.getLongestVideo();
+      
+      if (!longestVideo) {
+        return res.status(404).json({ message: "No videos found" });
+      }
+      
+      res.json(longestVideo);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch longest video" });
+    }
+  });
+  
+  // Get video by ID - this needs to be last as it has a wildcard parameter
+  app.get("/api/videos/:id([0-9]+)", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       

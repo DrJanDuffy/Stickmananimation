@@ -21,6 +21,7 @@ export interface IStorage {
   getVideosByCategory(category: string): Promise<Video[]>;
   getVideoById(id: number): Promise<Video | undefined>;
   getVideoByYouTubeId(videoId: string): Promise<Video | undefined>;
+  getLongestVideo(): Promise<Video | undefined>;
   createVideo(video: InsertVideo): Promise<Video>;
   updateVideo(id: number, video: Partial<InsertVideo>): Promise<Video | undefined>;
 }
@@ -110,6 +111,42 @@ export class DatabaseStorage implements IStorage {
   async getVideoByYouTubeId(videoId: string): Promise<Video | undefined> {
     const result = await db.select().from(videos).where(eq(videos.videoId, videoId));
     return result[0];
+  }
+  
+  async getLongestVideo(): Promise<Video | undefined> {
+    // This is a simple implementation that converts the duration string (like "5:30") to seconds
+    // and finds the video with the longest duration
+    
+    // First, get all videos
+    const allVideos = await this.getAllVideos();
+    
+    if (allVideos.length === 0) {
+      return undefined;
+    }
+    
+    // Function to convert duration string to seconds
+    const durationToSeconds = (duration: string): number => {
+      const parts = duration.split(':').map(Number);
+      
+      if (parts.length === 3) {
+        // Format: "H:MM:SS"
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
+      } else if (parts.length === 2) {
+        // Format: "M:SS"
+        return parts[0] * 60 + parts[1];
+      } else {
+        // Handle any other case
+        return 0;
+      }
+    };
+    
+    // Find the longest video
+    return allVideos.reduce((longest, current) => {
+      const longestDuration = durationToSeconds(longest.duration);
+      const currentDuration = durationToSeconds(current.duration);
+      
+      return currentDuration > longestDuration ? current : longest;
+    }, allVideos[0]);
   }
   
   async createVideo(insertVideo: InsertVideo): Promise<Video> {
