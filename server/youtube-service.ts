@@ -219,8 +219,14 @@ export async function syncYouTubeVideos(): Promise<void> {
     for (const video of videos) {
       const { id, snippet, contentDetails, statistics } = video as YouTubeVideo;
       
-      // Skip if we already have this video
+      // For existing videos, update the view count
       if (existingVideoIds.has(id)) {
+        const existingVideo = existingVideos.find(v => v.videoId === id);
+        if (existingVideo) {
+          await storage.updateVideo(existingVideo.id, { 
+            viewCount: parseInt(statistics.viewCount) || 0 
+          });
+        }
         continue;
       }
       

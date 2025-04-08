@@ -3,11 +3,12 @@ import { motion } from "framer-motion";
 import VideoCard from "../ui/VideoCard";
 import { useQuery } from "@tanstack/react-query";
 import { FaArrowRight } from "react-icons/fa";
+import type { Video } from "@shared/schema";
 
 export default function FeaturedAnimations() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   
-  const { data: featuredVideos, isLoading } = useQuery({ 
+  const { data: featuredVideos, isLoading } = useQuery<Video[]>({ 
     queryKey: ["/api/videos/featured"],
     staleTime: 60 * 60 * 1000, // 1 hour
   });
@@ -60,7 +61,7 @@ export default function FeaturedAnimations() {
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -68,7 +69,7 @@ export default function FeaturedAnimations() {
         >
           {isLoading ? (
             // Skeleton loaders
-            Array.from({ length: 3 }).map((_, i) => (
+            Array.from({ length: 8 }).map((_, i) => (
               <motion.div 
                 key={i}
                 variants={itemVariants}
@@ -76,20 +77,26 @@ export default function FeaturedAnimations() {
               />
             ))
           ) : (
-            featuredVideos?.map((video, index) => (
-              <motion.div key={video.id} variants={itemVariants}>
-                <VideoCard
-                  title={video.title}
-                  description={video.description}
-                  thumbnailUrl={video.thumbnailUrl}
-                  category={video.category}
-                  duration={video.duration}
-                  videoId={video.videoId}
-                  featured={true}
-                  onClick={handleVideoClick}
-                />
+            featuredVideos && featuredVideos.length > 0 ? (
+              featuredVideos.map((video, index) => (
+                <motion.div key={video.id} variants={itemVariants}>
+                  <VideoCard
+                    title={video.title}
+                    description={video.description || ""}
+                    thumbnailUrl={video.thumbnailUrl}
+                    category={video.category}
+                    duration={video.duration}
+                    videoId={video.videoId}
+                    featured={true}
+                    onClick={handleVideoClick}
+                  />
+                </motion.div>
+              ))
+            ) : (
+              <motion.div variants={itemVariants} className="col-span-full text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400">No featured videos available</p>
               </motion.div>
-            ))
+            )
           )}
         </motion.div>
         

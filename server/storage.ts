@@ -79,12 +79,25 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getFeaturedVideos(): Promise<Video[]> {
-    // Return the 6 most viewed featured videos
-    return await db.select()
+    // First, get all videos and sort by view count
+    const allVideos = await db.select()
       .from(videos)
-      .where(eq(videos.featured, true))
-      .orderBy(desc(videos.viewCount))
-      .limit(6);
+      .orderBy(desc(videos.viewCount));
+    
+    // Take the top 12 videos by view count
+    const topVideos = allVideos.slice(0, 12);
+    
+    // Update these videos to be featured
+    for (const video of topVideos) {
+      if (!video.featured) {
+        await db.update(videos)
+          .set({ featured: true })
+          .where(eq(videos.id, video.id));
+      }
+    }
+      
+    // Return the most viewed featured videos
+    return topVideos;
   }
   
   async getAllVideos(): Promise<Video[]> {
