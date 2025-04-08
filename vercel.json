@@ -4,22 +4,30 @@
   "outputDirectory": "dist",
   "builds": [
     {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
+      "src": "vercel-entry.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**", "server/**"],
+        "nodeVersion": "18.x"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server/index.ts"
+      "dest": "vercel-entry.js"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "server/index.ts"
+      "dest": "vercel-entry.js"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "VERCEL": "1"
   },
   "github": {
     "silent": true

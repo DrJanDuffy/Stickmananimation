@@ -60,20 +60,36 @@ app.use((req, res, next) => {
   // Use the port provided by Vercel or fallback to 5000
   const port = process.env.PORT || 5000;
   
-  server.listen({
-    port: Number(port),
-    host: "0.0.0.0",
-  })
-  .on('listening', () => {
-    log(`Server successfully started on port ${port}`);
-    
-    // Sync YouTube videos with our database
-    syncYouTubeVideos().catch(err => {
-      console.error("Failed to sync YouTube videos:", err);
+  // Check if we're in a serverless environment like Vercel
+  const isServerless = process.env.VERCEL === '1';
+  
+  if (!isServerless) {
+    // In regular environment, start the server
+    server.listen({
+      port: Number(port),
+      host: "0.0.0.0",
+    })
+    .on('listening', () => {
+      log(`Server successfully started on port ${port}`);
+      
+      // Sync YouTube videos with our database
+      syncYouTubeVideos().catch(err => {
+        console.error("Failed to sync YouTube videos:", err);
+      });
+    })
+    .on('error', (err: any) => {
+      log(`Error starting server: ${err.message}`);
+      throw err;
     });
-  })
-  .on('error', (err: any) => {
-    log(`Error starting server: ${err.message}`);
-    throw err;
-  });
+  } else {
+    // In serverless environment, we don't need to listen on a port
+    log(`Running in serverless mode`);
+    
+    // Still sync videos if needed, but with a check to avoid excessive API calls
+    if (process.env.SYNC_VIDEOS === 'true') {
+      syncYouTubeVideos().catch(err => {
+        console.error("Failed to sync YouTube videos:", err);
+      });
+    }
+  }
 })();

@@ -1,116 +1,107 @@
 # Deploying to Vercel
 
-This guide walks you through deploying the GK Animates website to Vercel.
+This document provides instructions for deploying the GK Animates portfolio website to Vercel.
 
 ## Prerequisites
 
-Before deploying, make sure you have:
+Before deploying, ensure you have:
 
-1. A [Vercel account](https://vercel.com/signup)
-2. A PostgreSQL database (Vercel Postgres, Neon, Railway, etc.)
-3. A YouTube API key with access to the YouTube Data API v3
+1. A [Vercel](https://vercel.com) account
+2. A [Neon PostgreSQL](https://neon.tech) database (or any other PostgreSQL provider)
+3. A [YouTube API key](https://developers.google.com/youtube/v3/getting-started)
+
+## Environment Variables
+
+You need to set the following environment variables in your Vercel project:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `YOUTUBE_API_KEY` | YouTube Data API v3 key | Yes |
+| `VERCEL` | Set to '1' to enable serverless mode | Yes |
+| `SYNC_VIDEOS` | Set to 'true' to sync videos on deployment | Optional |
+| `NODE_ENV` | Set to 'production' | Yes |
 
 ## Deployment Steps
 
-### 1. Fork or Clone the Repository
+### Using Vercel CLI
 
-If you haven't already, fork or clone this repository to your GitHub account.
+1. Install Vercel CLI:
+   ```bash
+   npm i -g vercel
+   ```
 
-### 2. Connect to Vercel
+2. Login to Vercel:
+   ```bash
+   vercel login
+   ```
 
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click "Add New" → "Project"
-3. Import your GitHub repository
-4. Select the branch you want to deploy (usually `main`)
+3. Deploy from the project root:
+   ```bash
+   vercel --prod
+   ```
 
-### 3. Configure Environment Variables
+4. Follow the prompts to set up your project.
 
-Add the following environment variables in the Vercel project settings:
+### Using Vercel Dashboard
 
-- `DATABASE_URL`: Your PostgreSQL connection string
-  - Format: `postgresql://username:password@host:port/database`
-- `YOUTUBE_API_KEY`: Your YouTube Data API key
-  - This is required to fetch videos from the GK Animates channel
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket).
+2. Connect your repository to Vercel.
+3. Configure the project:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Framework Preset: Other
+4. Add the required environment variables.
+5. Deploy the project.
 
-### 4. Deploy
+## Configuration Files
 
-1. Click "Deploy" to start the deployment process
-2. Vercel will automatically build and deploy your project
-3. Once deployment is complete, Vercel will provide you with a URL to access your site
+The project includes several configuration files specifically for Vercel deployment:
 
-### 5. Initialize Database (First Deployment Only)
+- `vercel.json`: Configures the build settings and routing
+- `vercel-entry.js`: Provides a compatible entry point for serverless functions
+- `api/index.js`: Routes API requests to the main server
 
-After the first deployment, you need to initialize your database schema. You can do this in two ways:
+## Database Migrations
 
-#### Option 1: Using Vercel CLI
+The project is configured to work with Drizzle ORM. To update the database schema:
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
-vercel login
-
-# Link to your project
-vercel link
-
-# Run database migration
-vercel env pull .env.production.local
-npx drizzle-kit push:pg --config=drizzle.config.ts
-```
-
-#### Option 2: Running Migrations Locally
-
-```bash
-# Set the DATABASE_URL to your production database
-export DATABASE_URL=your_production_database_url
-
-# Run migration
-npx drizzle-kit push:pg --config=drizzle.config.ts
-```
+1. Make changes to the schema in `shared/schema.ts`
+2. Run the migration command:
+   ```bash
+   npm run db:push
+   ```
 
 ## Troubleshooting
 
-### Database Connection Issues
+### Cannot Connect to Database
 
-If you encounter database connection issues:
-
-1. Verify your DATABASE_URL is correct
-2. Ensure your database allows connections from Vercel's IP ranges
-3. Check that your database user has appropriate permissions
+- Verify your `DATABASE_URL` is correctly set in Vercel's environment variables.
+- Ensure your database allows connections from Vercel's IP ranges.
+- For Neon, ensure you're using the correct connection string format with SSL enabled.
 
 ### YouTube API Issues
 
-If videos aren't loading:
+- Check that your `YOUTUBE_API_KEY` is valid and has the necessary permissions.
+- Verify you haven't exceeded quota limits.
 
-1. Verify your YOUTUBE_API_KEY is correct
-2. Ensure the YouTube Data API v3 is enabled in your Google Cloud Console
-3. Check API quotas and limits in Google Cloud Console
+### Deployment Errors
 
-## Maintaining Your Deployment
+- Check the Vercel build logs for specific error messages.
+- Ensure your Node.js version is compatible (project uses Node.js 18.x).
+- If you encounter serverless function size limits, optimize your code or consider splitting functions.
 
-### Updating Your Site
+## Performance Optimizations
 
-Any changes pushed to your main branch will trigger automatic redeployment.
+- The `SYNC_VIDEOS` environment variable controls when to sync videos from YouTube.
+  - Set to 'true' for infrequent syncing (e.g., once per day using a cron job).
+  - Set to 'false' for regular operation to avoid API quota usage.
+- Consider implementing caching strategies for frequently accessed data.
 
-### Checking Logs
+## Support
 
-1. Go to your project on the Vercel dashboard
-2. Click "View Functions Logs" to see server logs
-3. Use these logs to diagnose any issues with your deployment
+If you encounter issues with deployment, please:
 
-## Custom Domains
-
-To add a custom domain:
-
-1. Go to your project on the Vercel dashboard
-2. Click "Domains"
-3. Add your custom domain and follow the verification steps
-
-## Next Steps
-
-After successful deployment, consider:
-
-1. Setting up a CI/CD pipeline for testing before deployment
-2. Adding monitoring tools like Sentry for error tracking
-3. Implementing analytics to track visitor engagement
+1. Check the [Vercel documentation](https://vercel.com/docs)
+2. Consult the [Neon documentation](https://neon.tech/docs) for database issues
+3. Open an issue in the project repository
