@@ -128,7 +128,7 @@ export default function CreativeProcess() {
           animate={isInView ? "visible" : "hidden"}
         >
           <TimelineItem
-            year="2023"
+            year="Step 1"
             title="Concept Development"
             index={0}
             imageUrl="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e"
@@ -137,7 +137,7 @@ export default function CreativeProcess() {
           </TimelineItem>
           
           <TimelineItem
-            year="2023"
+            year="Step 2"
             title="Character Rigging"
             index={1}
             reverse
@@ -147,7 +147,7 @@ export default function CreativeProcess() {
           </TimelineItem>
           
           <TimelineItem
-            year="2023"
+            year="Step 3"
             title="Animation & Movement"
             index={2}
             imageUrl="https://images.unsplash.com/photo-1621600411688-4be93c2c1208"
@@ -156,7 +156,7 @@ export default function CreativeProcess() {
           </TimelineItem>
           
           <TimelineItem
-            year="2023"
+            year="Step 4"
             title="Visual Effects & Rendering"
             index={3}
             reverse
