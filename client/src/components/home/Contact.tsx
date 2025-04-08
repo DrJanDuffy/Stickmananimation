@@ -32,10 +32,8 @@ export default function Contact() {
 
   // Contact information
   const contactInfo = [
-    { icon: <FaEnvelope />, title: "Email", value: "contact@gkanimates.com", href: "mailto:contact@gkanimates.com" },
-    { icon: <FaYoutube />, title: "YouTube", value: "youtube.com/gkanimates", href: "#" },
-    { icon: <FaInstagram />, title: "Instagram", value: "@gkanimates", href: "#" },
-    { icon: <FaTwitter />, title: "Twitter", value: "@gkanimates", href: "#" },
+    { icon: <FaEnvelope />, title: "Email", value: "genekellyboyle@gmail.com", href: "mailto:genekellyboyle@gmail.com" },
+    { icon: <FaYoutube />, title: "YouTube", value: "@genekellyboyle", href: "https://www.youtube.com/@genekellyboyle" },
   ];
 
   // Mutation for newsletter subscription
@@ -155,9 +153,9 @@ export default function Contact() {
           
           {/* Contact */}
           <motion.div variants={itemVariants}>
-            <h2 className="text-3xl font-['Poppins'] font-bold mb-4">Get In Touch</h2>
+            <h2 className="text-3xl font-['Poppins'] font-bold mb-4">Let's Connect</h2>
             <p className="mb-6 opacity-90">
-              Interested in collaboration or have questions about my work? Feel free to reach out!
+              If you're passionate about animation, digital storytelling, or innovative content creation, I'd love to chat! Check out my work and let's discuss how we can push the boundaries of digital animation together.
             </p>
             
             <div className="space-y-6">
@@ -183,6 +181,20 @@ export default function Contact() {
                   </div>
                 </motion.div>
               ))}
+              
+              <motion.div 
+                className="mt-8 pt-6 border-t border-white/20"
+                variants={itemVariants}
+              >
+                <h4 className="font-medium mb-3">Find me online</h4>
+                <div className="flex flex-wrap gap-2">
+                  {["#DigitalAnimation", "#YouTubeCreator", "#IndependentAnimator", "#StickFigureAnimation", "#VisualStorytelling"].map((tag, i) => (
+                    <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>

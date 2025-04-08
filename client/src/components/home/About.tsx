@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { FaLinkedin, FaYoutube, FaAward, FaStar } from "react-icons/fa";
+import { FaLinkedin, FaYoutube, FaAward, FaStar, FaEnvelope } from "react-icons/fa";
 
 interface TimelineEventProps {
   year: string;
@@ -9,14 +9,14 @@ interface TimelineEventProps {
 }
 
 const timelineEvents: TimelineEventProps[] = [
-  { year: "2016", event: "Started learning 2D animation as a hobby" },
-  { year: "2018", event: "Created first short animation and uploaded to YouTube" },
-  { year: "2019", event: "Completed online animation course from Animation Mentor", highlight: true },
-  { year: "2020", event: "Launched \"gkanimates\" YouTube channel to share animation tutorials", highlight: true },
-  { year: "2021", event: "First animation tutorial reached 50,000 views" },
-  { year: "2022", event: "Collaborated with other animators on a short film project" },
-  { year: "2023", event: "Reached 100K subscribers milestone on YouTube", highlight: true },
-  { year: "Present", event: "Working as freelance animator and YouTube content creator" },
+  { year: "2016", event: "Started learning digital animation and storytelling techniques" },
+  { year: "2018", event: "Developed early concepts for Stickman Epic Legends series" },
+  { year: "2019", event: "Mastered Adobe Animate and After Effects for professional animation", highlight: true },
+  { year: "2020", event: "Launched \"Stickman Epic Legends\" series on YouTube", highlight: true },
+  { year: "2021", event: "Refined animation style focusing on fluid character motion and cinematic techniques" },
+  { year: "2022", event: "Expanded animation repertoire to include advanced storytelling and comedy" },
+  { year: "2023", event: "Achieved significant viewer growth with monthly animation releases", highlight: true },
+  { year: "Present", event: "Continuing to innovate in stick figure animation on Animation Island" },
 ];
 
 function TimelineEvent({ year, event, highlight }: TimelineEventProps) {
@@ -130,20 +130,49 @@ export default function About() {
             </motion.h2>
             
             <motion.div 
-              className="space-y-4 text-gray-600 dark:text-gray-400"
+              className="space-y-5 text-gray-600 dark:text-gray-400"
               variants={itemVariants}
             >
               <p className="text-lg leading-relaxed">
-                I'm a passionate animator and <span className="font-semibold text-primary">YouTube content creator</span> specializing in character animation, motion graphics, and animation tutorials. My journey began as a self-taught animator in 2016, and I've been growing my skills and community ever since.
+                I'm passionate about pushing the boundaries of digital animation and storytelling. As the creator of <span className="font-semibold text-primary">"Stickman Epic Legends,"</span> I'm revolutionizing stick figure animation on YouTube, blending dynamic action, comedy, and cinematic techniques.
               </p>
+
+              <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Professional Highlights</h3>
+                <ul className="list-disc list-inside space-y-1 ml-1">
+                  <li>Developed and produce "Stickman Epic Legends," a cutting-edge animated YouTube series</li>
+                  <li>Specialize in fluid character animation and innovative storytelling techniques</li>
+                  <li>Proficient in Adobe Animate, After Effects, and other industry-standard animation tools</li>
+                  <li>Release new high-quality animated content monthly, growing a dedicated audience</li>
+                  <li>Combine traditional animation principles with modern digital techniques</li>
+                </ul>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 my-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">2D Animation</span>
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Character Design</span>
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Storyboarding</span>
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Digital Storytelling</span>
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">Video Editing</span>
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">YouTube Management</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Current Focus</h3>
+                  <p className="text-sm">
+                    "Stickman Epic Legends" follows the adventures of Stickman on Animation Island, showcasing action-packed sequences, comedic storytelling, fluid character motion, and vibrant visuals.
+                  </p>
+                </div>
+              </div>
+
               <p>
-                My animation style focuses on fluid character movement and expressive storytelling. I love breaking down complex animation principles into accessible tutorials that help aspiring animators develop their skills and find their unique creative voice.
-              </p>
-              <p>
-                As the creator behind the "gkanimates" YouTube channel, I share weekly animation tips, software tutorials, and behind-the-scenes looks at my creative process. My goal is to build a supportive community where animation enthusiasts can learn, collaborate, and grow together.
+                I'm constantly refining my animation techniques and exploring new ways to engage audiences through visual storytelling. I combine traditional animation principles with modern digital techniques to create captivating stories that resonate with viewers worldwide.
               </p>
               
-              <div className="flex items-center gap-4 pt-3">
+              <div className="flex items-center gap-4 pt-2">
                 <a 
                   href="https://www.linkedin.com/in/genekellyboyle" 
                   target="_blank" 
@@ -160,11 +189,26 @@ export default function About() {
                 >
                   <FaYoutube className="text-xl" /> YouTube
                 </a>
-                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                  <FaYoutube className="text-xl" />
-                  <span>Animation Tutorial Expert</span>
-                </div>
+                <a 
+                  href="mailto:genekellyboyle@gmail.com" 
+                  className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-2 font-medium"
+                >
+                  <FaEnvelope className="text-xl" /> Email
+                </a>
               </div>
+            </motion.div>
+            
+            <motion.div className="mt-8" variants={itemVariants}>
+              <h3 className="font-['Poppins'] font-semibold text-xl mb-4">Seeking Connections</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                I'm always eager to connect with fellow animators, digital content creators, and professionals interested in:
+              </p>
+              <ul className="space-y-2 list-disc list-inside text-gray-600 dark:text-gray-400">
+                <li>Emerging trends in digital animation</li>
+                <li>The intersection of technology and creativity</li>
+                <li>Collaborative opportunities in animation and digital content</li>
+                <li>The evolving landscape of independent animation</li>
+              </ul>
             </motion.div>
             
             <motion.div className="mt-8" variants={itemVariants}>
