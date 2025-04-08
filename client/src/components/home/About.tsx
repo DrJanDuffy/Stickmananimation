@@ -9,13 +9,14 @@ interface TimelineEventProps {
 }
 
 const timelineEvents: TimelineEventProps[] = [
-  { year: "2012", event: "Graduated with MFA in Animation & Digital Arts from USC School of Cinematic Arts" },
-  { year: "2013", event: "Joined Walt Disney Animation Studios as Character Animator", highlight: true },
-  { year: "2015", event: "Worked on the Oscar-winning film 'Zootopia' as Animation Lead", highlight: true },
-  { year: "2017", event: "Contributed to 'Frozen 2' and 'Moana' as Senior Animator" },
-  { year: "2019", event: "Lead Character Design for 'Raya and the Last Dragon'" },
-  { year: "2021", event: "Launched YouTube channel \"gkanimates\" reaching 100K subscribers", highlight: true },
-  { year: "Present", event: "Working as Animation Director and Educational Content Creator" },
+  { year: "2016", event: "Started learning 2D animation as a hobby" },
+  { year: "2018", event: "Created first short animation and uploaded to YouTube" },
+  { year: "2019", event: "Completed online animation course from Animation Mentor", highlight: true },
+  { year: "2020", event: "Launched \"gkanimates\" YouTube channel to share animation tutorials", highlight: true },
+  { year: "2021", event: "First animation tutorial reached 50,000 views" },
+  { year: "2022", event: "Collaborated with other animators on a short film project" },
+  { year: "2023", event: "Reached 100K subscribers milestone on YouTube", highlight: true },
+  { year: "Present", event: "Working as freelance animator and YouTube content creator" },
 ];
 
 function TimelineEvent({ year, event, highlight }: TimelineEventProps) {
@@ -77,14 +78,14 @@ export default function About() {
                 className="relative z-10 rounded-lg w-full object-cover aspect-[3/4] shadow-lg"
               />
               
-              {/* Disney Animation Badge */}
+              {/* YouTube Creator Badge */}
               <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-2 px-3 rounded-full shadow-md z-20 flex items-center gap-2">
                 <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Walt_Disney_Animation_Studios_logo.svg/220px-Walt_Disney_Animation_Studios_logo.svg.png" 
-                  alt="Disney Animation Studios"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/159px-YouTube_full-color_icon_%282017%29.svg.png" 
+                  alt="YouTube Creator"
                   className="h-5 w-auto"
                 />
-                <span className="text-xs font-medium">Animator</span>
+                <span className="text-xs font-medium">Creator</span>
               </div>
               
               <motion.div 
@@ -100,14 +101,14 @@ export default function About() {
                 }}
               />
               
-              {/* Annie Awards Badge */}
+              {/* Subscriber Milestone Badge */}
               <motion.div 
-                className="absolute -bottom-3 -left-6 bg-amber-500/90 dark:bg-amber-600/90 text-white py-1 px-3 rounded-full shadow-md z-20 flex items-center gap-1 text-sm"
+                className="absolute -bottom-3 -left-6 bg-red-500/90 dark:bg-red-600/90 text-white py-1 px-3 rounded-full shadow-md z-20 flex items-center gap-1 text-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 1, duration: 0.5 }}
               >
-                <FaAward /> Annie Award Nominee
+                <FaYoutube /> 100K Subscribers
               </motion.div>
             </div>
           </motion.div>
@@ -130,13 +131,13 @@ export default function About() {
               variants={itemVariants}
             >
               <p className="text-lg leading-relaxed">
-                I'm an award-winning Animation Director with <span className="font-semibold text-primary">over 12 years of experience</span> at top studios including Disney Animation and Pixar. My expertise spans character animation, visual storytelling, and innovative animation techniques that push creative boundaries.
+                I'm a passionate animator and <span className="font-semibold text-primary">YouTube content creator</span> specializing in character animation, motion graphics, and animation tutorials. My journey began as a self-taught animator in 2016, and I've been growing my skills and community ever since.
               </p>
               <p>
-                Having contributed to multiple Oscar-winning films, I've developed a signature style that focuses on creating authentic emotional connections through character design and fluid motion. My work has been recognized by the Annie Awards and featured at international animation festivals.
+                My animation style focuses on fluid character movement and expressive storytelling. I love breaking down complex animation principles into accessible tutorials that help aspiring animators develop their skills and find their unique creative voice.
               </p>
               <p>
-                Today, I split my time between directing commercial animation projects and sharing my knowledge through my YouTube channel, where I break down advanced animation techniques and mentor emerging talent in the field.
+                As the creator behind the "gkanimates" YouTube channel, I share weekly animation tips, software tutorials, and behind-the-scenes looks at my creative process. My goal is to build a supportive community where animation enthusiasts can learn, collaborate, and grow together.
               </p>
               
               <div className="flex items-center gap-4 pt-3">
@@ -156,9 +157,9 @@ export default function About() {
                 >
                   <FaYoutube className="text-xl" /> YouTube
                 </a>
-                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-                  <FaAward className="text-xl" />
-                  <span>Annie Award Nominee</span>
+                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                  <FaYoutube className="text-xl" />
+                  <span>Animation Tutorial Expert</span>
                 </div>
               </div>
             </motion.div>
