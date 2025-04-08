@@ -2,13 +2,25 @@
 /node_modules
 /.pnp
 .pnp.js
+jspm_packages/
 
 # testing
 /coverage
+*.lcov
+.nyc_output
 
 # production
 /build
 /dist
+.next
+out
+.nuxt
+.vuepress/dist
+.temp
+.cache
+**/.vitepress/dist
+**/.vitepress/cache
+.docusaurus
 
 # environment variables
 .env
@@ -18,13 +30,18 @@
 .env.production.local
 
 # logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # editor directories and files
 .idea/
 .vscode/
+.vscode-test
 *.suo
 *.ntvs*
 *.njsproj
@@ -39,3 +56,41 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# npm/yarn
+.npm
+.eslintcache
+.stylelintcache
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+*.tgz
+
+# Misc
+pids
+*.pid
+*.seed
+*.pid.lock
+lib-cov
+.grunt
+bower_components
+.lock-wscript
+build/Release
+web_modules/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.node_repl_history
+.cache
+.parcel-cache
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
