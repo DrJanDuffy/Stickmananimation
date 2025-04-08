@@ -79,10 +79,11 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getFeaturedVideos(): Promise<Video[]> {
-    // Return the 6 latest videos as featured videos
+    // Return the 6 most viewed featured videos
     return await db.select()
       .from(videos)
-      .orderBy(desc(videos.publishedAt))
+      .where(eq(videos.featured, true))
+      .orderBy(desc(videos.viewCount))
       .limit(6);
   }
   
@@ -183,6 +184,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f",
         category: "Character",
         duration: "3:24",
+        viewCount: 12500,
         featured: true,
         showreel: true,
         publishedAt: new Date("2023-01-15"),
@@ -194,6 +196,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1",
         category: "Motion Graphics",
         duration: "2:15",
+        viewCount: 35000,
         featured: true,
         showreel: false,
         publishedAt: new Date("2023-02-20"),
@@ -205,6 +208,7 @@ export class DatabaseStorage implements IStorage {
         thumbnailUrl: "https://images.unsplash.com/photo-1516035071284-94981165aca1",
         category: "Short Films",
         duration: "4:52",
+        viewCount: 28000,
         featured: true,
         showreel: false,
         publishedAt: new Date("2023-03-10"),

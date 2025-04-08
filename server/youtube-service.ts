@@ -241,6 +241,7 @@ export async function syncYouTubeVideos(): Promise<void> {
         thumbnailUrl,
         category,
         duration,
+        viewCount: parseInt(statistics.viewCount) || 0,
         publishedAt: new Date(snippet.publishedAt),
         featured: false, // Default to not featured
         showreel: false, // Default to not showreel
