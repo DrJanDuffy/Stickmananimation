@@ -273,49 +273,24 @@ app.post('/api/newsletter/subscribe', async (req, res) => {
   }
 });
 
-// Serve static files for non-API routes
-app.use(express.static(path.join(process.cwd(), 'dist'), { 
-  maxAge: '1d',
-  setHeaders: (res, path) => {
-    // Don't cache HTML files
-    if (path.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
-  }
-}));
+// Don't handle non-API routes in this serverless function
+// This is strictly for API endpoints
 
-// Catch-all route for SPA
-app.get('*', (req, res) => {
-  try {
-    // Skip API routes
-    if (req.url.startsWith('/api/')) {
-      return res.status(404).json({ message: "API endpoint not found" });
-    }
-    
-    // Improve debug output
-    console.log(`Serving index.html for path: ${req.url}`);
-    
-    // Serve the index.html for client-side routing
-    const indexPath = path.join(process.cwd(), 'dist', 'index.html');
-    
-    // Check if file exists and log the outcome
-    const fileExists = fs.existsSync(indexPath);
-    console.log(`Index file exists: ${fileExists}, path: ${indexPath}`);
-    
-    if (fileExists) {
-      return res.sendFile(indexPath);
-    } else {
-      console.error("Index.html not found in dist directory");
-      const distContents = fs.existsSync(path.join(process.cwd(), 'dist')) ? 
-        fs.readdirSync(path.join(process.cwd(), 'dist')).join(', ') : 
-        'dist directory not found';
-      console.log(`Dist directory contents: ${distContents}`);
-      return res.status(404).send("Application not built properly. Missing index.html in dist directory.");
-    }
-  } catch (error) {
-    console.error("Error serving static content:", error);
-    res.status(500).send(`Server error: ${error.message}`);
-  }
+// Handle 404 for unknown API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Not Found',
+    message: `Unknown API endpoint: ${req.originalUrl}`,
+    availableEndpoints: [
+      '/api/status',
+      '/api/videos/showreel',
+      '/api/videos/featured',
+      '/api/videos/all',
+      '/api/videos/category/:category',
+      '/api/videos/longest',
+      '/api/newsletter/subscribe'
+    ]
+  });
 });
 
 // Error handling middleware
