@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "vercel-entry.js": {
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 10
     }
@@ -11,14 +11,14 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/vercel-entry.js"
+      "dest": "/api/index.js"
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/vercel-entry.js"
+      "dest": "/api/index.js"
     }
   ],
   "env": {

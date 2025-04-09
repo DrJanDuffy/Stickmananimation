@@ -6,14 +6,46 @@ const { eq } = require('drizzle-orm');
 const path = require('path');
 const fs = require('fs');
 
+// Check environment variables on startup
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL environment variable is not set. Please set it in your Vercel project settings.");
+}
+
+if (!process.env.YOUTUBE_API_KEY) {
+  console.error("YOUTUBE_API_KEY environment variable is not set. Please set it in your Vercel project settings.");
+}
+
 // Create Express app
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Initialize database client using environment variables
-const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql);
+let sql, db;
+try {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL environment variable is not set");
+  }
+  
+  console.log("Initializing database connection...");
+  sql = neon(process.env.DATABASE_URL);
+  db = drizzle(sql);
+  console.log("Database connection established successfully");
+} catch (error) {
+  console.error("Failed to initialize database:", error instanceof Error ? error.message : String(error));
+  
+  // Setup a simple handler for all routes that returns an error if DB connection failed
+  app.all('*', (req, res) => {
+    res.status(500).json({
+      error: "Database connection failed",
+      message: "The application cannot connect to the database. Please check the environment variables and try again."
+    });
+  });
+  
+  // Export the app with just the error handler
+  module.exports = app;
+  return;
+}
 
 // Import schema directly here to avoid module resolution issues
 const schema = {
