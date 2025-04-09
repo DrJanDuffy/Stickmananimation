@@ -7,8 +7,8 @@ This document explains how the application is configured for deployment on Verce
 The application is configured to be deployed on Vercel using the following files:
 
 - `vercel.json`: Configures build settings, routes, and serverless function options
-- `api/index.js`: A standalone serverless API handler that works without ESM imports
-- `index.js`: Entry point that forwards to the API handler
+- `vercel-entry.js`: A completely self-contained serverless handler with zero external imports
+- `index.js`: Entry point that forwards to the serverless handler
 
 ## Vercel Environment Variables
 
@@ -21,15 +21,17 @@ The following environment variables must be set in the Vercel dashboard:
 
 The main challenge with deploying to Vercel was the incompatibility between ESM and CommonJS modules in a serverless environment. The solution was to:
 
-1. Create a dedicated CommonJS API handler in `api/index.js` that:
-   - Directly connects to the database (no imports from server/)
-   - Implements all API endpoints using raw SQL instead of Drizzle ORM
-   - Includes appropriate error handling for serverless execution
+1. Create a completely self-contained serverless handler in `vercel-entry.js` that:
+   - Contains all API routes and logic within a single file
+   - Uses zero external imports from the project codebase
+   - Implements all API endpoints using direct SQL queries
+   - Includes robust error handling for serverless execution
 
-2. Simplify the deployment configuration in `vercel.json` to:
-   - Use reasonable memory limits (1024MB)
-   - Set appropriate timeout (10 seconds)
-   - Route all traffic through the API handler
+2. Configure deployment in `vercel.json` to directly use the self-contained handler:
+   - Route all traffic directly to vercel-entry.js instead of api/index.js
+   - Use appropriate memory limits (1024MB) for database operations
+   - Set longer timeout (10 seconds) to handle initial connection overhead
+   - Simplify build and output configuration
 
 ## Performance Optimizations
 
