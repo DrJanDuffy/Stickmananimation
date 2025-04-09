@@ -2,7 +2,12 @@
   "rewrites": [
     { 
       "source": "/api/:path*", 
-      "destination": "https://stickmananimations-api.replit.app/api/:path*" 
+      "destination": "https://stickmananimations.replit.app/api/:path*" 
     }
-  ]
+  ],
+  "github": {
+    "enabled": true,
+    "silent": false,
+    "autoJobCancelation": true
+  }
 }
