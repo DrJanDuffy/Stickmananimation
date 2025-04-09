@@ -3,6 +3,13 @@
   "outputDirectory": ".",
   "installCommand": false,
   "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { 
+      "source": "/(.*)", 
+      "destination": "https://stickmananimations.replit.app/$1" 
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -21,5 +28,10 @@
         }
       ]
     }
-  ]
+  ],
+  "github": {
+    "silent": false,
+    "enabled": true,
+    "autoJobCancelation": true
+  }
 }
