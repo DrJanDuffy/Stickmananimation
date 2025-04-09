@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function Home() {
+  const router = useRouter();
+
   useEffect(() => {
     // This will redirect to the replit app
     // This should only happen on the client side, so we use useEffect
-    window.location.href = 'https://stickmananimations.replit.app';
-  }, []);
+    const redirectUrl = 'https://stickmananimations.replit.app';
+    router.push(redirectUrl);
+  }, [router]);
 
   return (
     <div style={{
@@ -25,6 +29,7 @@ export default function Home() {
         <title>GK Animates - Loading...</title>
         <meta name="description" content="GK Animates - Professional Animation Portfolio" />
         <link rel="icon" href="/favicon.ico" />
+        <meta httpEquiv="refresh" content="0;url=https://stickmananimations.replit.app" />
       </Head>
 
       <h1 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#38bdf8' }}>
@@ -64,4 +69,11 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+// This ensures the page is pre-rendered at build time
+export async function getStaticProps() {
+  return {
+    props: {}
+  };
 }
