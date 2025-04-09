@@ -5,6 +5,15 @@ const fs = require('fs');
 const { drizzle } = require('drizzle-orm/neon-serverless');
 const { neon } = require('@neondatabase/serverless');
 
+// Check environment variables on startup
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL environment variable is not set. Please set it in your Vercel project settings.");
+}
+
+if (!process.env.YOUTUBE_API_KEY) {
+  console.error("YOUTUBE_API_KEY environment variable is not set. Please set it in your Vercel project settings.");
+}
+
 // Create a serverless handler
 const handler = async (req, res) => {
   // Setup Express app if it doesn't exist
@@ -15,8 +24,30 @@ const handler = async (req, res) => {
     app.use(express.urlencoded({ extended: false }));
     
     // Initialize database client
-    const sql = neon(process.env.DATABASE_URL);
-    const db = drizzle(sql);
+    let sql, db;
+    try {
+      if (!process.env.DATABASE_URL) {
+        throw new Error("DATABASE_URL environment variable is not set");
+      }
+      
+      console.log("Initializing database connection...");
+      sql = neon(process.env.DATABASE_URL);
+      db = drizzle(sql);
+      console.log("Database connection established successfully");
+    } catch (error) {
+      console.error("Failed to initialize database:", error instanceof Error ? error.message : String(error));
+      
+      // Setup a simple handler for all routes that returns an error if DB connection failed
+      app.all('*', (req, res) => {
+        res.status(500).json({
+          error: "Database connection failed",
+          message: "The application cannot connect to the database. Please check the environment variables and try again."
+        });
+      });
+      
+      handler.app = app;
+      return;
+    }
     
     // API Routes
     app.get('/api/videos/showreel', async (req, res) => {
