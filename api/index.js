@@ -69,6 +69,26 @@ const schema = {
   }
 };
 
+// Diagnostic route
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'ok',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    vercelInfo: {
+      region: process.env.VERCEL_REGION || 'unknown',
+      deploymentUrl: process.env.VERCEL_URL || 'unknown'
+    },
+    databaseConnected: !!db,
+    paths: {
+      cwd: process.cwd(),
+      indexPath: path.join(process.cwd(), 'dist', 'index.html'),
+      indexExists: fs.existsSync(path.join(process.cwd(), 'dist', 'index.html')),
+      distExists: fs.existsSync(path.join(process.cwd(), 'dist'))
+    }
+  });
+});
+
 // API Routes
 app.get('/api/videos/showreel', async (req, res) => {
   try {
@@ -254,7 +274,15 @@ app.post('/api/newsletter/subscribe', async (req, res) => {
 });
 
 // Serve static files for non-API routes
-app.use(express.static(path.join(process.cwd(), 'dist')));
+app.use(express.static(path.join(process.cwd(), 'dist'), { 
+  maxAge: '1d',
+  setHeaders: (res, path) => {
+    // Don't cache HTML files
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
+}));
 
 // Catch-all route for SPA
 app.get('*', (req, res) => {
@@ -264,16 +292,29 @@ app.get('*', (req, res) => {
       return res.status(404).json({ message: "API endpoint not found" });
     }
     
+    // Improve debug output
+    console.log(`Serving index.html for path: ${req.url}`);
+    
     // Serve the index.html for client-side routing
     const indexPath = path.join(process.cwd(), 'dist', 'index.html');
-    if (fs.existsSync(indexPath)) {
+    
+    // Check if file exists and log the outcome
+    const fileExists = fs.existsSync(indexPath);
+    console.log(`Index file exists: ${fileExists}, path: ${indexPath}`);
+    
+    if (fileExists) {
       return res.sendFile(indexPath);
     } else {
-      return res.status(404).send("Application not built. Please run 'npm run build' first.");
+      console.error("Index.html not found in dist directory");
+      const distContents = fs.existsSync(path.join(process.cwd(), 'dist')) ? 
+        fs.readdirSync(path.join(process.cwd(), 'dist')).join(', ') : 
+        'dist directory not found';
+      console.log(`Dist directory contents: ${distContents}`);
+      return res.status(404).send("Application not built properly. Missing index.html in dist directory.");
     }
   } catch (error) {
     console.error("Error serving static content:", error);
-    res.status(500).send("Server error");
+    res.status(500).send(`Server error: ${error.message}`);
   }
 });
 
