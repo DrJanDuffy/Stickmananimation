@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Apply the proper content security policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.googleapis.com https://www.youtube.com https://*.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://replit.com/public/js/replit-badge-v3.js https://www.youtube.com/iframe_api https://www.google.com/recaptcha/; frame-src https://www.youtube.com;">
   
-  <!-- Redirect to the built client application path -->
-  <meta http-equiv="refresh" content="0;url=/client/">
+  <!-- Redirect to the built application path -->
+  <meta http-equiv="refresh" content="0;url=dist/public/index.html">
   
   <title>GK Animates by Gene Kelly Boyle | Animation Portfolio</title>
   <meta name="description" content="Professional animation portfolio showcasing the work of Gene Kelly Boyle, animator and storyteller. Explore character animations, motion graphics, and short films.">
@@ -106,13 +104,13 @@
     <div class="loading"><div></div><div></div><div></div></div>
     <p>Loading the animation portfolio...</p>
     <p>You will be redirected automatically in a moment.</p>
-    <a href="/client/" class="manual-btn">Go to Animation Portfolio</a>
+    <a href="dist/public/index.html" class="manual-btn">Go to Animation Portfolio</a>
   </div>
   
   <!-- JavaScript redirect as fallback -->
   <script>
-    // Redirect to the client application
-    window.location.href = '/client/';
+    // Redirect to the built application
+    window.location.href = 'dist/public/index.html';
   </script>
 </body>
 </html>
