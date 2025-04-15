@@ -6,6 +6,11 @@ import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // API status endpoint for health checks
+  app.get("/api/status", (_req: Request, res: Response) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+  
   // API Routes - Videos
   
   // Get showreel video
