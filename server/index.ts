@@ -37,8 +37,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Initialize the app
+let server: any;
+
 (async () => {
-  const server = await registerRoutes(app);
+  server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -93,3 +96,6 @@ app.use((req, res, next) => {
     }
   }
 })();
+
+// Export the app for Vercel serverless deployment
+export { app };

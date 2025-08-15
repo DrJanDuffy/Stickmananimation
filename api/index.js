@@ -1,15 +1,11 @@
-// This redirects API requests to the Express backend
-// Vercel will use this file when deployed
+// Vercel serverless function handler for the Express app
+import { app } from '../dist/index.js';
 
+// Create a serverless handler for Vercel
 export default function handler(req, res) {
-  // Redirect to the Replit app API
-  const targetUrl = `https://stickmananimations.replit.app${req.url}`;
+  // Set environment to indicate we're in serverless mode
+  process.env.VERCEL = '1';
   
-  // Set cache control headers
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  
-  // Redirect to the API endpoint on Replit
-  res.redirect(307, targetUrl);
+  // Handle the request through Express
+  app(req, res);
 }
