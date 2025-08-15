@@ -61,7 +61,15 @@ The project is configured for easy deployment on Vercel:
 3. Deploy your application
 4. Initialize the database schema using the Drizzle CLI
 
-For detailed instructions, see the [Deployment Guide](docs/DEPLOYMENT.md).
+For detailed instructions, see the [Vercel Deployment Guide](VERCEL_DEPLOYMENT.md).
+
+### Environment Variables
+
+Make sure to configure these environment variables in your Vercel project:
+
+- `DATABASE_URL`: Your PostgreSQL connection string
+- `YOUTUBE_API_KEY`: Your YouTube Data API v3 key
+- `SYNC_VIDEOS`: Set to `true` to sync videos on deployment (optional)
 
 ## Links
 
