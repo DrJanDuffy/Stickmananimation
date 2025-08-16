@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import AnimatedGradient from "../ui/AnimatedGradient";
 import ScrollIndicator from "../ui/ScrollIndicator";
 import { useQuery } from "@tanstack/react-query";
-import { getLatestShowreel } from "@/lib/youtube";
+import { getLatestShowreel } from "../../lib/youtube";
 import { FaPlay, FaCode, FaFilm, FaAward, FaLaptopCode } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
 

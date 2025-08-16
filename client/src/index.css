@@ -1,112 +1,19 @@
+/* Minimal CSS to get app running */
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-['Comfortaa'] font-bold;
-  }
+/* Basic root styles without @apply */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --border: 214.3 31.8% 91.4%;
 }
 
-@layer components {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#00BFA6];
-  }
-
-  .bg-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  }
-
-  .card-shadow {
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-
-  .section-container {
-    @apply container mx-auto px-4 md:px-6 py-16 md:py-24;
-  }
-
-  .section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl text-gradient mb-6 md:mb-10;
-  }
-
-  .section-subtitle {
-    @apply text-lg md:text-xl text-muted-foreground mb-16 max-w-3xl mx-auto;
-  }
-}
-
-/* Custom Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes wave {
-  0% { transform: rotate(0deg); }
-  20% { transform: rotate(14deg); }
-  40% { transform: rotate(-8deg); }
-  60% { transform: rotate(14deg); }
-  80% { transform: rotate(-4deg); }
-  100% { transform: rotate(10deg); }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulse 3s ease-in-out infinite;
-  display: inline-block;
-}
-
-.animate-spin-slow {
-  animation: spin 12s linear infinite;
-}
-
-.animate-bounce-slow {
-  animation: bounce 3s ease-in-out infinite;
-}
-
-.animate-wave {
-  animation: wave 2.5s ease-in-out infinite;
-  transform-origin: 70% 70%;
-}
-
-/* Video hover effects */
-.video-card {
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.video-card:hover {
-  transform: scale(1.05);
-  z-index: 1;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
 }

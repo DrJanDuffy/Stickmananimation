@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { FaSun, FaMoon } from "react-icons/fa";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -20,3 +20,4 @@ export default function ThemeToggle() {
     </motion.button>
   );
 }
+

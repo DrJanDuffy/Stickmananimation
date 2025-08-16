@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FaYoutube, FaFilm, FaPlay, FaThumbsUp, FaBell, FaUsers, FaVideo, FaShare } from "react-icons/fa";
-import { getLongestVideo } from "@/lib/youtube";
-import { getFeaturedVideos } from "@/lib/youtube";
-import { getVideosByCategory } from "@/lib/youtube";
+import { getLongestVideo } from "../../lib/youtube";
+import { getFeaturedVideos } from "../../lib/youtube";
+import { getVideosByCategory } from "../../lib/youtube";
 import { useQuery } from "@tanstack/react-query";
 
 export default function CreativeProcess() {

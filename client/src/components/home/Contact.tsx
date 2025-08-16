@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "../../lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { FaEnvelope, FaYoutube, FaInstagram, FaTwitter } from "react-icons/fa";
 
 // Form schema validation
